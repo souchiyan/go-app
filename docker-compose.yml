@@ -1,0 +1,37 @@
+version: '3.8'
+services:
+  db:
+    container_name: mysql_db
+    image: mysql:latest
+    ports:
+      - 3306:3306
+    env_file:
+      - variables.env
+    volumes:
+      - mysql_data:/var/lib/mysql
+  go-folder:
+    container_name: go-folder
+    build: ./go-folder
+
+    volumes:
+      - ./go-folder:/go-folder
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+
+    tty: true
+    stdin_open: true
+
+  react-app:
+    container_name: react-app
+    build: ./react-app
+    volumes:
+      - ./react-app:/react-app
+    ports:
+      - "3000:3000"
+    tty: true
+    stdin_open: true
+    
+volumes:
+  mysql_data:
