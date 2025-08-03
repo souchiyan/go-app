@@ -1,53 +1,28 @@
-import { useState } from "react";
-import axios from "axios";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Auth from "./Auth";
+import PrivateRoute from "./PrivateRoute";
+import Page from "./Page";
+import CoffeeLog from "./CoffeeLog";
+import CafeMap from "./CafeMap";
 
-function Auth() {
-  const [name, setName] = useState("");
-  const [password, setPassword] = useState("");
-
-  const handleRegister = async () => {
-    try {
-      const res = await axios.post("http://localhost:8080/register", {
-        name,
-        password
-      });
-      alert(res.data.message);
-    } catch (err) {
-      alert("登録失敗: " + err.response?.data || err.message);
-    }
-  };
-
-  const handleLogin = async () => {
-    try {
-      const res = await axios.post("http://localhost:8080/login", {
-        name,
-        password
-      });
-      localStorage.setItem("token", res.data.token);
-      alert("ログイン成功");
-    } catch (err) {
-      alert("ログイン失敗: " + err.response?.data || err.message);
-    }
-  };
-
+function App() {
   return (
-    <div>
-      <h2>ログイン / 登録</h2>
-      <input
-        placeholder="名前"
-        value={name}
-        onChange={(e) => setName(e.target.value)}
-      />
-      <input
-        type="password"
-        placeholder="パスワード"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-      />
-      <button onClick={handleRegister}>登録</button>
-      <button onClick={handleLogin}>ログイン</button>
-    </div>
+    <Router>
+      <Routes>
+        <Route path="/" element={<Auth />}></Route>
+        <Route
+          path="/index"
+          element={
+            <PrivateRoute>
+              <Page />
+            </PrivateRoute>
+          }
+        ></Route>
+        <Route path="/coffeelog" element={<CoffeeLog />}></Route>
+        <Route path="/cafemap" element={<CafeMap />}></Route>
+      </Routes>
+    </Router>
   );
 }
 
-export default Auth;
+export default App;

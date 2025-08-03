@@ -1,0 +1,73 @@
+/* Page.css */
+
+.page-container {
+  min-height: 100vh;
+  background: linear-gradient(to bottom right, #fdf6f0, #f5e8dc);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+
+.card {
+  background-color: #ffffff;
+  border-radius: 1.5rem;
+  padding: 3rem 2rem;
+  max-width: 480px;
+  width: 100%;
+  text-align: center;
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.08);
+  transition: transform 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+}
+
+.title {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #6b4f3b;
+  margin-bottom: 1rem;
+}
+
+.subtitle {
+  color: #4b3b30;
+  margin-bottom: 2rem;
+}
+
+.link-group {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.btn {
+  display: inline-block;
+  padding: 0.75rem 1.5rem;
+  border-radius: 9999px;
+  font-size: 1.125rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition: background-color 0.3s, transform 0.2s;
+}
+
+.btn-log {
+  background-color: #a9825a;
+  color: white;
+}
+
+.btn-log:hover {
+  background-color: #8b6d4d;
+  transform: scale(1.05);
+}
+
+.btn-map {
+  background-color: #d0b49f;
+  color: white;
+}
+
+.btn-map:hover {
+  background-color: #b79c89;
+  transform: scale(1.05);
+}
