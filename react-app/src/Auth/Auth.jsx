@@ -1,6 +1,8 @@
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
-import axios from "axios"
+import axios from "axios";
+import "../styles/Auth.css"; 
+
 function Auth() {
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
@@ -14,10 +16,10 @@ function Auth() {
       });
       alert(res.data.message);
     } catch (err) {
-      alert("登録失敗: " + err.response?.data || err.message);
+      alert("登録失敗: " + (err.response?.data || err.message));
     }
-    setName("")
-    setPassword("")
+    setName("");
+    setPassword("");
   };
 
   const handleLogin = async () => {
@@ -30,27 +32,32 @@ function Auth() {
       alert("ログイン成功");
       navigate("/index");
     } catch (err) {
-      alert("ログイン失敗: " + err.response?.data || err.message);
+      alert("ログイン失敗: " + (err.response?.data || err.message));
     }
   };
 
   return (
-    <div>
-      <h2>ログイン / 登録</h2>
+    <div className="auth-container">
+      <h2 className="auth-title">ログイン / 登録</h2>
       <input
+        className="auth-input"
         placeholder="名前"
         value={name}
         onChange={(e) => setName(e.target.value)}
       />
       <input
+        className="auth-input"
         type="password"
         placeholder="パスワード"
         value={password}
         onChange={(e) => setPassword(e.target.value)}
       />
-      <button onClick={handleRegister}>登録</button>
-      <button onClick={handleLogin}>ログイン</button>
+      <div className="auth-button-group">
+        <button className="auth-button" onClick={handleRegister}>登録</button>
+        <button className="auth-button login" onClick={handleLogin}>ログイン</button>
+      </div>
     </div>
   );
 }
+
 export default Auth;

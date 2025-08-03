@@ -18,5 +18,6 @@ func InitDatabase() {
 		panic(err)
 	}
 	DB.AutoMigrate(&models.User{})
+	DB.AutoMigrate(&models.CoffeeLog{})
 	fmt.Println("database connected!")
 }

@@ -1,5 +1,5 @@
 import { NavLink } from "react-router-dom";
-import "./Page.css";
+import "../styles/Page.css";
 
 function Page() {
   return (
@@ -14,6 +14,9 @@ function Page() {
           </NavLink>
           <NavLink to="/cafemap" className="btn btn-map">
             カフェマップ
+          </NavLink>
+          <NavLink to="/logs/show" className="btn btn-map">
+            コーヒーログ
           </NavLink>
         </div>
       </div>
