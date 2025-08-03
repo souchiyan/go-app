@@ -1,9 +1,11 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Auth from "./Auth";
+import Auth from "./Auth/Auth";
 import PrivateRoute from "./PrivateRoute";
-import Page from "./Page";
-import CoffeeLog from "./CoffeeLog";
+import Page from "./Page/Page";
+import CoffeeLog from "./CoffeeLog/CoffeeLog";
 import CafeMap from "./CafeMap";
+import CoffeeShow from "./CoffeeLog/CoffeeShow";
+
 
 function App() {
   return (
@@ -20,6 +22,7 @@ function App() {
         ></Route>
         <Route path="/coffeelog" element={<CoffeeLog />}></Route>
         <Route path="/cafemap" element={<CafeMap />}></Route>
+        <Route path="/logs/show" element={<CoffeeShow />}></Route>
       </Routes>
     </Router>
   );

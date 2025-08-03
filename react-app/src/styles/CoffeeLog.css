@@ -1,0 +1,63 @@
+body {
+  margin: 0;
+  font-family: "Segoe UI", sans-serif;
+  background-color: #f4f1ee;
+}
+
+.coffee-container {
+  max-width: 500px;
+  margin: 50px auto;
+  padding: 30px;
+  background-color: #fffaf5;
+  border-radius: 12px;
+  box-shadow: 0 8px 16px rgba(100, 60, 30, 0.1);
+}
+
+.title {
+  text-align: center;
+  font-size: 28px;
+  color: #6b4f3b;
+  margin-bottom: 24px;
+}
+
+.coffee-form {
+  display: flex;
+  flex-direction: column;
+}
+
+.coffee-form label {
+  margin-bottom: 6px;
+  color: #5b4033;
+  font-weight: bold;
+}
+
+.coffee-form input,
+.coffee-form textarea,
+.coffee-form select {
+  padding: 10px;
+  margin-bottom: 18px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 14px;
+  background-color: #fefefe;
+}
+
+.coffee-form textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+.coffee-form button {
+  background-color: #8b5e3c;
+  color: white;
+  border: none;
+  padding: 12px;
+  font-size: 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.coffee-form button:hover {
+  background-color: #6b442b;
+}
