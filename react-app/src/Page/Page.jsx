@@ -12,11 +12,14 @@ function Page() {
           <NavLink to="/coffeelog" className="btn btn-log">
             コーヒーログ画面
           </NavLink>
-          <NavLink to="/cafemap" className="btn btn-map">
-            カフェマップ
-          </NavLink>
           <NavLink to="/logs/show" className="btn btn-map">
             コーヒーログ
+          </NavLink>
+          <NavLink to="/beans" className="btn btn-map">
+            在庫管理登録
+          </NavLink>
+          <NavLink to="/beans/show" className="btn btn-map">
+            在庫管理一覧
           </NavLink>
         </div>
       </div>
