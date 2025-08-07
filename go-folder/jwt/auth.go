@@ -1,6 +1,7 @@
 package jwt
 
 import (
+	"context"
 	"encoding/json"
 	"go-folder/database"
 	"go-folder/models"
@@ -12,6 +13,10 @@ import (
 )
 
 var jwtSecret = []byte("secretKey")
+
+type contextKey string
+
+const UserIDKey = contextKey("userID")
 
 func Register(w http.ResponseWriter, r *http.Request) {
 	var user models.User
@@ -60,8 +65,9 @@ func Login(w http.ResponseWriter, r *http.Request) {
 
 	//JWTトークンの生成
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"Name": user.Name,
-		"exp":  time.Now().Add(time.Hour * 24).Unix(),
+		"Name":   user.Name,
+		"UserID": user.ID,
+		"exp":    time.Now().Add(time.Hour * 24).Unix(),
 	})
 
 	tokenString, err := token.SignedString(jwtSecret)
@@ -73,14 +79,15 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(map[string]string{"token": tokenString})
 }
-
 func AuthenticateMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		tokenString := r.Header.Get("Authorization")
-		if tokenString == "" {
-			http.Error(w, "Missing token", http.StatusUnauthorized)
+		authHeader := r.Header.Get("Authorization")
+		if authHeader == "" || len(authHeader) < 8 || authHeader[:7] != "Bearer " {
+			http.Error(w, "Missing or invalid token", http.StatusUnauthorized)
 			return
 		}
+		tokenString := authHeader[7:]
+
 		token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 			return jwtSecret, nil
 		})
@@ -88,7 +95,14 @@ func AuthenticateMiddleware(next http.Handler) http.Handler {
 			http.Error(w, "Invalid token", http.StatusUnauthorized)
 			return
 		}
-		next.ServeHTTP(w, r)
-	})
 
+		if claims, ok := token.Claims.(jwt.MapClaims); ok {
+			userID := uint(claims["UserID"].(float64))
+			ctx := context.WithValue(r.Context(), UserIDKey, userID)
+			next.ServeHTTP(w, r.WithContext(ctx))
+		} else {
+			http.Error(w, "Invalid token claims", http.StatusUnauthorized)
+			return
+		}
+	})
 }

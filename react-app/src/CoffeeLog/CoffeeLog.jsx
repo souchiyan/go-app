@@ -12,24 +12,37 @@ function CoffeeLog() {
   const [rating, setRating] = useState("");
   const navigate = useNavigate();
 
+const handleLogs = async (e) => {
+  e.preventDefault();
 
-  const handleLogs = async (e) => {
-    e.preventDefault();
-    try {
-      await axios.post("http://localhost:8080/logs", {
+  const token = localStorage.getItem("token"); // トークン取得
+  if (!token) {
+    alert("トークンが見つかりません。ログインしてください。");
+    return;
+  }
+
+  try {
+    await axios.post(
+      "http://localhost:8080/logs",
+      {
         title,
         origin,
         method,
         notes,
         rating,
-      });
-      alert("作成完了！");
-      navigate("/logs/show");
-    
-    } catch (err) {
-      alert("記録失敗: " + (err.response?.data || err.message));
-    }
-  };
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`, // ここが大事！
+        },
+      }
+    );
+    alert("作成完了！");
+    navigate("/logs/show");
+  } catch (err) {
+    alert("記録失敗: " + (err.response?.data || err.message));
+  }
+};
 
   return (
     <div className="coffee-container">

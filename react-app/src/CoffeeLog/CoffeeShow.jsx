@@ -6,16 +6,27 @@ function CoffeeShow() {
   const [logs, setLogs] = useState([]);
 
   useEffect(() => {
-    const fetchLogs = async () => {
-      try {
-        const res = await axios.get("http://localhost:8080/logs/show");
-        setLogs(res.data);
-      } catch (err) {
-        alert("取得失敗：" + (err.response?.data || err.message));
-      }
-    };
-    fetchLogs();
-  }, []);
+  const fetchLogs = async () => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      alert("トークンが見つかりません。ログインしてください。");
+      return;
+    }
+
+    try {
+      const res = await axios.get("http://localhost:8080/logs/show", {
+        headers: {
+          Authorization: `Bearer ${token}`, // ← ここが重要！
+        },
+      });
+      setLogs(res.data);
+    } catch (err) {
+      alert("取得失敗：" + (err.response?.data || err.message));
+    }
+  };
+
+  fetchLogs();
+}, []);
 
   return (
     <div className="coffee-show-container">
