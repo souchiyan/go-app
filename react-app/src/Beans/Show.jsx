@@ -1,9 +1,12 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 import "../styles/CoffeeShow.css";
 
 function BeansShow() {
   const [logs, setLogs] = useState([]);
+    const navigate = useNavigate();
+
 
   useEffect(() => {
   const fetchLogs = async () => {
@@ -31,6 +34,9 @@ function BeansShow() {
   return (
     <div className="coffee-show-container">
       <h1 className="coffee-show-title">☕ 在庫一覧</h1>
+      <button className="home-button" onClick={() => navigate("/index")}>
+        ホームに戻る
+      </button>
       <ul className="coffee-log-list">
         {logs.map((log, index) => (
           <li key={index} className="coffee-log-item">
