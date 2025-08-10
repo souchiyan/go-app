@@ -6,6 +6,7 @@ import CoffeeLog from "./CoffeeLog/CoffeeLog";
 import CoffeeShow from "./CoffeeLog/CoffeeShow";
 import BeansShow from "./Beans/Show";
 import Beans from "./Beans/Beans";
+import FavoriteList from "./CoffeeLog/FavoriteList";
 
 
 function App() {
@@ -25,6 +26,7 @@ function App() {
         <Route path="/beans" element={<Beans />}></Route>
         <Route path="/beans/show" element={<BeansShow />}></Route>
         <Route path="/logs/show" element={<CoffeeShow />}></Route>
+        <Route path="/logs/favorites" element={<FavoriteList />}></Route>
       </Routes>
     </Router>
   );

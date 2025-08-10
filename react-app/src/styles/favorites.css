@@ -1,0 +1,63 @@
+.favorite-list-container {
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #faf7f2;
+  border-radius: 12px;
+  box-shadow: 0px 4px 10px rgba(0,0,0,0.1);
+}
+
+.favorite-title {
+  text-align: center;
+  font-size: 28px;
+  color: #6b4226;
+  margin-bottom: 20px;
+}
+
+.no-favorites {
+  text-align: center;
+  color: #999;
+  font-style: italic;
+}
+
+.favorite-items {
+  list-style: none;
+  padding: 0;
+}
+
+.favorite-item {
+  background: white;
+  padding: 15px 20px;
+  border-radius: 10px;
+  margin-bottom: 15px;
+  border-left: 6px solid #d4a373;
+  box-shadow: 0px 2px 6px rgba(0,0,0,0.05);
+}
+
+.coffee-name {
+  font-size: 20px;
+  margin-bottom: 8px;
+  color: #4e342e;
+}
+
+.coffee-notes {
+  margin-top: 10px;
+  color: #555;
+  font-style: italic;
+}
+.home-button {
+  display: inline-block;
+  background-color: #6b4226;
+  color: white;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  margin-bottom: 20px;
+  transition: background-color 0.3s ease;
+}
+
+.home-button:hover {
+  background-color: #a97455;
+}

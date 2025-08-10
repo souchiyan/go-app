@@ -15,6 +15,9 @@ function Page() {
           <NavLink to="/logs/show" className="btn btn-map">
             コーヒーログ
           </NavLink>
+          <NavLink to="/logs/favorites" className="btn btn-map">
+            お気に入り
+          </NavLink>
           <NavLink to="/beans" className="btn btn-map">
             在庫管理登録
           </NavLink>

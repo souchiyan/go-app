@@ -8,27 +8,35 @@ import (
 	"go-folder/models"
 	"log"
 	"net/http"
+
+	"github.com/go-chi/chi/v5"
 )
 
 func main() {
 	database.InitDatabase()
+	r := chi.NewRouter()
 
-	mux := http.NewServeMux()
-
+	r.Use(enableCORS)
 	//非認証ルート
-	mux.HandleFunc("/login", jwtauth.Login)
-	mux.HandleFunc("/register", jwtauth.Register)
+	r.Post("/login", jwtauth.Login)
+	r.Post("/register", jwtauth.Register)
 
 	//認証ルート
-	mux.Handle("/logs", jwtauth.AuthenticateMiddleware(http.HandlerFunc(CoffeeLog)))
-	mux.Handle("/logs/show", jwtauth.AuthenticateMiddleware(http.HandlerFunc(LogsShow)))
-	mux.Handle("/beans", jwtauth.AuthenticateMiddleware(http.HandlerFunc(Beans)))
-	mux.Handle("/beans/show", jwtauth.AuthenticateMiddleware(http.HandlerFunc(BeansShow)))
+	r.Group(func(auth chi.Router) {
+		auth.Use(jwtauth.AuthenticateMiddleware)
+
+		auth.Post("/logs", CoffeeLog)
+		auth.Get("/logs/show", LogsShow)
+		auth.Get("/logs/favorites", FavoriteList)
+		auth.Post("/logs/{id}/favorite", ToggleHandler)
+
+		auth.Post("/beans", Beans)
+		auth.Get("/beans/show", BeansShow)
+	})
 
 	// CORSを処理するミドルウェアをラップ
-	handler := enableCORS(mux)
 	log.Println("サーバー起動中: http://localhost:8080")
-	log.Fatal(http.ListenAndServe(":8080", handler))
+	log.Fatal(http.ListenAndServe(":8080", r))
 }
 
 func CoffeeLog(w http.ResponseWriter, r *http.Request) {
@@ -68,6 +76,49 @@ func LogsShow(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(logs)
+}
+
+func ToggleHandler(w http.ResponseWriter, r *http.Request) {
+	userID, ok := r.Context().Value(jwtauth.UserIDKey).(uint)
+	if !ok {
+		http.Error(w, "ユーザー情報が取得できません", http.StatusUnauthorized)
+		return
+	}
+
+	idStr := chi.URLParam(r, "id")
+	var logItem models.CoffeeLog
+	if err := database.DB.Where("id = ? AND user_id = ?", idStr, userID).First(&logItem).Error; err != nil {
+		http.Error(w, "データが見つかりません", http.StatusNotFound)
+		return
+
+	}
+	logItem.IsFavorite = !logItem.IsFavorite
+	if err := database.DB.Save(&logItem).Error; err != nil {
+		http.Error(w, "取得失敗", http.StatusInternalServerError)
+		return
+	}
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(map[string]any{
+		"success":     true,
+		"is_favorite": logItem.IsFavorite,
+	})
+
+}
+
+func FavoriteList(w http.ResponseWriter, r *http.Request) {
+	userID, ok := r.Context().Value(jwtauth.UserIDKey).(uint)
+	if !ok {
+		http.Error(w, "ユーザー情報が取得できません", http.StatusUnauthorized)
+		return
+	}
+	var favorites []models.CoffeeLog
+	if err := database.DB.Where("user_id = ? AND is_favorite = ?", userID, true).Find(&favorites).Error; err != nil {
+		http.Error(w, "データの取得に失敗しました", http.StatusInternalServerError)
+		return
+	}
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(favorites)
+
 }
 
 func Beans(w http.ResponseWriter, r *http.Request) {

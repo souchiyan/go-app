@@ -44,6 +44,9 @@ function Beans() {
     <div>
       <div className="coffee-container">
         <h1 className="title">☕ 在庫管理登録</h1>
+        <button className="home-button" onClick={() => navigate("/index")}>
+        ホームに戻る
+      </button>
         <form onSubmit={handleLogs} className="coffee-form">
           <label>豆の種類</label>
           <input
