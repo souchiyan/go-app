@@ -8,26 +8,20 @@ import BeansShow from "./Beans/Show";
 import Beans from "./Beans/Beans";
 import FavoriteList from "./CoffeeLog/FavoriteList";
 
-
 function App() {
   return (
     <Router>
-      <Routes>
-        <Route path="/" element={<Auth />}></Route>
-        <Route
-          path="/index"
-          element={
-            <PrivateRoute>
-              <Page />
-            </PrivateRoute>
-          }
-        ></Route>
-        <Route path="/coffeelog" element={<CoffeeLog />}></Route>
-        <Route path="/beans" element={<Beans />}></Route>
-        <Route path="/beans/show" element={<BeansShow />}></Route>
-        <Route path="/logs/show" element={<CoffeeShow />}></Route>
-        <Route path="/logs/favorites" element={<FavoriteList />}></Route>
-      </Routes>
+      <PrivateRoute>
+        <Routes>
+          <Route path="/" element={<Auth />}></Route>
+          <Route path="/index" element={<Page />}></Route>
+          <Route path="/coffeelog" element={<CoffeeLog />}></Route>
+          <Route path="/beans" element={<Beans />}></Route>
+          <Route path="/beans/show" element={<BeansShow />}></Route>
+          <Route path="/logs/show" element={<CoffeeShow />}></Route>
+          <Route path="/logs/favorites" element={<FavoriteList />}></Route>
+        </Routes>
+      </PrivateRoute>
     </Router>
   );
 }

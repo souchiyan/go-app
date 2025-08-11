@@ -3,24 +3,26 @@ import axios from "axios";
 import "../styles/CoffeeShow.css";
 import { useNavigate } from "react-router-dom";
 
-
 function CoffeeShow() {
   const [logs, setLogs] = useState([]);
-    const navigate = useNavigate();
-
+  const [page, setPage] = useState(1);
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchLogs();
-  }, []);
+  }, [page]);
 
   const fetchLogs = async () => {
     const token = localStorage.getItem("token");
     if (!token) return alert("ログインしてください");
 
     try {
-      const res = await axios.get("http://localhost:8080/logs/show", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const res = await axios.get(
+        `http://localhost:8080/logs/show?page=${page}&limit=3`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
       setLogs(res.data);
     } catch (err) {
       alert("取得失敗：" + (err.response?.data || err.message));
@@ -30,9 +32,13 @@ function CoffeeShow() {
   const toggleFavorite = async (id) => {
     const token = localStorage.getItem("token");
     try {
-      await axios.post(`http://localhost:8080/logs/${id}/favorite`, {}, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      await axios.post(
+        `http://localhost:8080/logs/${id}/favorite`,
+        {},
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
       fetchLogs(); // 更新
     } catch (err) {
       alert("お気に入り変更失敗：" + (err.response?.data || err.message));
@@ -49,12 +55,20 @@ function CoffeeShow() {
         {logs.map((log) => (
           <li key={log.id} className="coffee-log-item">
             <h2 className="log-title">{log.title}</h2>
-            <p><strong>豆の産地:</strong> {log.origin}</p>
-            <p><strong>方法:</strong> {log.method}</p>
-            <p><strong>評価:</strong> {log.rating} / 5</p>
-            <p><strong>感想:</strong> {log.notes}</p>
-            <button 
-              className="favorite-btn" 
+            <p>
+              <strong>豆の産地:</strong> {log.origin}
+            </p>
+            <p>
+              <strong>方法:</strong> {log.method}
+            </p>
+            <p>
+              <strong>評価:</strong> {log.rating} / 5
+            </p>
+            <p>
+              <strong>感想:</strong> {log.notes}
+            </p>
+            <button
+              className="favorite-btn"
               onClick={() => toggleFavorite(log.id)}
             >
               {log.is_favorite ? "★ お気に入り" : "☆ お気に入り"}
@@ -62,6 +76,23 @@ function CoffeeShow() {
           </li>
         ))}
       </ul>
+      <div className="pagination">
+        <button
+          onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
+          disabled={page === 1}
+        >
+          ← 前へ
+        </button>
+
+        <span>{page} ページ目</span>
+
+        <button
+          onClick={() => setPage((prev) => prev + 1)}
+          disabled={logs.length < 3} // 1ページの件数に合わせて調整
+        >
+          次へ →
+        </button>
+      </div>
     </div>
   );
 }
