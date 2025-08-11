@@ -8,6 +8,7 @@ import (
 	"go-folder/models"
 	"log"
 	"net/http"
+	"strconv"
 
 	"github.com/go-chi/chi/v5"
 )
@@ -67,9 +68,16 @@ func LogsShow(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "ユーザー情報が取得できません", http.StatusUnauthorized)
 		return
 	}
+	pageStr := r.URL.Query().Get("page")
+	limitStr := r.URL.Query().Get("limit")
+
+	page, _ := strconv.Atoi(pageStr)
+	limit, _ := strconv.Atoi(limitStr)
+
+	offset := (page - 1) * limit
 
 	var logs []models.CoffeeLog
-	if err := database.DB.Where("user_id = ?", userID).Find(&logs).Error; err != nil {
+	if err := database.DB.Where("user_id = ?", userID).Offset(offset).Limit(limit).Find(&logs).Error; err != nil {
 		http.Error(w, "データの取得に失敗しました。", http.StatusInternalServerError)
 		return
 	}
@@ -152,9 +160,15 @@ func BeansShow(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "ユーザー情報が取得できません", http.StatusUnauthorized)
 		return
 	}
+	pageStr := r.URL.Query().Get("page")
+	limitStr := r.URL.Query().Get("limit")
 
+	page, _ := strconv.Atoi(pageStr)
+	limit, _ := strconv.Atoi(limitStr)
+
+	offset := (page - 1) * limit
 	var beans []models.Beans
-	if err := database.DB.Where("user_id = ?", userID).Find(&beans).Error; err != nil {
+	if err := database.DB.Where("user_id = ?", userID).Offset(offset).Limit(limit).Find(&beans).Error; err != nil {
 		http.Error(w, "データの取得に失敗しました。", http.StatusInternalServerError)
 		return
 	}
