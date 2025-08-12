@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import axios from "axios";
 import "../styles/CoffeeShow.css";
 import { useNavigate } from "react-router-dom";
@@ -8,9 +8,6 @@ function CoffeeShow() {
   const [page, setPage] = useState(1);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    fetchLogs();
-  }, [page]);
 
   const fetchLogs = async () => {
     const token = localStorage.getItem("token");
@@ -44,6 +41,21 @@ function CoffeeShow() {
       alert("お気に入り変更失敗：" + (err.response?.data || err.message));
     }
   };
+  const deleteHandler = async (id) => {
+    const token = localStorage.getItem("token");
+
+    try {
+      await axios.delete(
+        `http://localhost:8080/logs/delete/${id}`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      fetchLogs();
+    } catch (err) {
+      alert("削除失敗" + (err.response?.data || err.message));
+    }
+  };
 
   return (
     <div className="coffee-show-container">
@@ -72,6 +84,12 @@ function CoffeeShow() {
               onClick={() => toggleFavorite(log.id)}
             >
               {log.is_favorite ? "★ お気に入り" : "☆ お気に入り"}
+            </button>
+            <button
+              className="favorite-btn"
+              onClick={() => deleteHandler(log.id)}
+            >
+              削除
             </button>
           </li>
         ))}

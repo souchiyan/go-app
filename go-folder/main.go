@@ -28,6 +28,7 @@ func main() {
 
 		auth.Post("/logs", CoffeeLog)
 		auth.Get("/logs/show", LogsShow)
+		auth.Delete("/logs/delete/{id}", LogsDelete)
 		auth.Get("/logs/favorites", FavoriteList)
 		auth.Post("/logs/{id}/favorite", ToggleHandler)
 
@@ -84,6 +85,25 @@ func LogsShow(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(logs)
+}
+
+func LogsDelete(w http.ResponseWriter, r *http.Request) {
+	userID, ok := r.Context().Value(jwtauth.UserIDKey).(uint)
+	if !ok {
+		http.Error(w, "ユーザー情報が取得できません", http.StatusUnauthorized)
+		return
+	}
+
+	var log models.CoffeeLog
+
+	idStr := chi.URLParam(r, "id")
+
+	if err := database.DB.Where("id = ? AND user_id = ?", idStr, userID).Delete(&log).Error; err != nil {
+		http.Error(w, "削除失敗", http.StatusInternalServerError)
+		return
+	}
+
+	fmt.Println("CoffeeLog削除完了")
 }
 
 func ToggleHandler(w http.ResponseWriter, r *http.Request) {
