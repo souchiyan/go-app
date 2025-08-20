@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import "../styles/CoffeeShow.css";
 import { useNavigate } from "react-router-dom";
@@ -7,7 +7,6 @@ function CoffeeShow() {
   const [logs, setLogs] = useState([]);
   const [page, setPage] = useState(1);
   const navigate = useNavigate();
-
 
   const fetchLogs = async () => {
     const token = localStorage.getItem("token");
@@ -25,6 +24,8 @@ function CoffeeShow() {
       alert("取得失敗：" + (err.response?.data || err.message));
     }
   };
+
+  useEffect(() => fetchLogs, [page]);
 
   const toggleFavorite = async (id) => {
     const token = localStorage.getItem("token");
@@ -45,12 +46,9 @@ function CoffeeShow() {
     const token = localStorage.getItem("token");
 
     try {
-      await axios.delete(
-        `http://localhost:8080/logs/delete/${id}`,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
+      await axios.delete(`http://localhost:8080/logs/delete/${id}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
       fetchLogs();
     } catch (err) {
       alert("削除失敗" + (err.response?.data || err.message));
