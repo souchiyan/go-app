@@ -13,15 +13,10 @@ services:
     container_name: go-folder
     build: ./go-folder
 
-    volumes:
-      - ./go-folder:/go-folder
     ports:
       - "8080:8080"
     depends_on:
       - db
-
-    tty: true
-    stdin_open: true
 
   react-app:
     container_name: react-app
